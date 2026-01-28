@@ -1,11 +1,14 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || "http://localhost:5000/api/v1",
+  baseURL: "https://crud-assignment-2.onrender.com/api/v1",
   headers: {
     "Content-Type": "application/json",
   },
 });
+
+export default api;
+
 
 export const fetchStudents = async (page, limit) => {
   const response = await api.get("/students", {

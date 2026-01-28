@@ -1,0 +1,16 @@
+.app {
+  min-height: 100vh;
+}
+
+.card-title {
+  font-weight: 600;
+}
+
+.table td,
+.table th {
+  vertical-align: middle;
+}
+
+.pagination .page-link {
+  cursor: pointer;
+}

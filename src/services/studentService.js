@@ -1,7 +1,8 @@
 import axios from "axios";
 
+// Use REACT_APP_API_URL in production if backend is on another host; otherwise same-origin /api/v1
 const api = axios.create({
-  baseURL: "https://crud-assignment-2.onrender.com/api/v1",
+  baseURL: process.env.REACT_APP_API_URL || "/api/v1",
   headers: {
     "Content-Type": "application/json",
   },

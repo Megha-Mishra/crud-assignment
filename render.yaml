@@ -7,7 +7,7 @@ services:
     runtime: node
     # Use repo root so we can build frontend and run backend
     rootDir: .
-    buildCommand: npm install && npm run build && cd backend && npm install
+    buildCommand: npm install && npm run build && npm run postbuild
     startCommand: node backend/src/server.js  # This starts the Express server
     envVars:
       - key: NODE_ENV

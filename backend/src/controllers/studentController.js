@@ -4,21 +4,30 @@ const MAX_LIMIT = 100;
 
 const listStudents = async (req, res, next) => {
   try {
+    console.log(`\n📥 listStudents controller called`);
+    console.log(`  Page: ${req.query.page}, Limit: ${req.query.limit}`);
+    
     const page = req.query.page || 1;
     const limit = Math.min(req.query.limit || 10, MAX_LIMIT);
     const offset = (page - 1) * limit;
 
+    console.log(`  Executing COUNT query...`);
     const [countRows] = await pool.query(
       "SELECT COUNT(*) AS total FROM students"
     );
     const total = countRows[0]?.total || 0;
     const totalPages = total === 0 ? 0 : Math.ceil(total / limit);
 
+    console.log(`  Total students: ${total}, Total pages: ${totalPages}`);
+    console.log(`  Executing SELECT query (LIMIT ${limit}, OFFSET ${offset})...`);
+    
     const [rows] = await pool.query(
       "SELECT id, name, email, age FROM students ORDER BY id DESC LIMIT ? OFFSET ?",
       [limit, offset]
     );
 
+    console.log(`  ✓ Query successful, returning ${rows.length} students`);
+    
     res.json({
       success: true,
       data: rows,
@@ -30,6 +39,7 @@ const listStudents = async (req, res, next) => {
       },
     });
   } catch (error) {
+    console.error(`  ✗ Error in listStudents:`, error.message);
     next(error);
   }
 };

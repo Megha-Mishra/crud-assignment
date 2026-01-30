@@ -49,6 +49,23 @@ app.get("/api/test", (req, res) => {
   });
 });
 
+// Database health check - use this to verify DB connection on Render
+app.get("/api/health/db", async (req, res) => {
+  try {
+    const pool = require("./db");
+    const [rows] = await pool.query("SELECT 1 AS ok");
+    res.json({ status: "ok", database: "connected", ping: rows[0]?.ok === 1 });
+  } catch (err) {
+    console.error("DB health check failed:", err.message, err.code);
+    res.status(500).json({
+      status: "error",
+      database: "disconnected",
+      message: process.env.NODE_ENV === "production" ? "Database connection failed" : err.message,
+      code: err.code,
+    });
+  }
+});
+
 app.use("/api/v1/students", (req, res, next) => {
   console.log(`✓ /api/v1/students route matched - Method: ${req.method}, Path: ${req.path}`);
   next();

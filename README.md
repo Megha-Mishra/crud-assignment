@@ -62,13 +62,23 @@ REACT_APP_API_URL=https://your-backend.onrender.com/api/v1
 
 ## Deploy to Render (https://crud-assignment-1-a3d7.onrender.com)
 
-1. **One service (recommended)**  
-   Use repo root so the same app serves both API and React:
-   - **Root Directory**: leave empty (repo root)
+**Important:** The service **must** be a **Web Service** (Node), **not** a Static Site. If you use Static Site, `/api/v1/students` will return 404 because no Node server runs.
+
+1. **Create or convert to Web Service**
+   - In Render: **New → Web Service** (not Static Site).
+   - Connect your repo.
+
+2. **Settings**
+   - **Root Directory**: leave empty (repo root).
    - **Build Command**: `npm install && npm run build && cd backend && npm install`
    - **Start Command**: `node backend/src/server.js`
-   - **Environment**: set `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` (and `DB_PORT` if needed) to your production MySQL (e.g. Render MySQL, PlanetScale, or other cloud DB). Do not use `localhost` for production.
+   - **Environment**: set `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` (and `DB_PORT` if needed) to your production MySQL. Do not use `localhost` for production.
 
-2. **Health check**: Render can use `GET /api/health` as the health path.
+3. **Health check**: Use `GET /api/health` as the health check path in Render.
 
-3. The app uses relative `/api/v1` so the frontend and API run on the same host with no 404s. All routes (including refresh) serve the React app; only `/api/*` hits the backend.
+4. Deploy. The same URL will serve the React app and the API; `/api/v1/students` will work.
+
+### If you see 404 for `/api/v1/students`
+
+- **Cause:** The service is a **Static Site** (only files, no Node server).
+- **Fix:** Delete the Static Site and create a **Web Service** (Node) with the Build and Start commands above, or in the existing service change the type to Web Service and set Root Directory, Build Command, and Start Command as above.

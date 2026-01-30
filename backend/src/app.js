@@ -10,24 +10,27 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
 });
-
 app.use("/api/v1/students", studentRoutes);
 
-// Serve React build in production to avoid 404 on refresh / direct URLs
+
+app.use("/api", (req, res, next) => {
+  res.status(404).json({ success: false, message: "Route not found" });
+});
+
+
 const buildPath = path.join(__dirname, "..", "..", "build");
 const hasBuild = fs.existsSync(buildPath);
 if (hasBuild) {
-  app.use(express.static(buildPath));
-  // SPA fallback: serve index.html for non-API routes (handles React Router)
+  app.use((req, res, next) => {
+    if (req.path.startsWith("/api")) return next();
+    express.static(buildPath)(req, res, next);
+  });
   app.get("*", (req, res, next) => {
-    // Skip API routes - let them fall through to 404 handler if not matched
-    if (req.path.startsWith("/api/")) {
-      return next();
-    }
-    // Serve React app for all other routes
+    if (req.path.startsWith("/api")) return next();
     res.sendFile(path.join(buildPath, "index.html"), (err) => {
       if (err) {
         console.error("Error serving index.html:", err);
@@ -37,7 +40,6 @@ if (hasBuild) {
   });
 }
 
-// 404 handler for unmatched API routes and other requests
 app.use((req, res) => {
   res.status(404).json({ success: false, message: "Route not found" });
 });

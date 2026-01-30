@@ -86,11 +86,16 @@ if (hasBuild) {
   });
   
   // SPA fallback: serve index.html for non-API routes
-  app.get("*", (req, res, next) => {
+  // Use app.use with a function instead of app.get("*") for Express 5 compatibility
+  app.use((req, res, next) => {
     // Skip API routes - they should have been handled above
     if (req.path.startsWith("/api")) {
       console.log(`  → SPA fallback skipped for API route: ${req.path}`);
       return next(); // Continue to 404 handler
+    }
+    // Only handle GET requests for SPA fallback
+    if (req.method !== "GET") {
+      return next();
     }
     console.log(`  → SPA fallback: serving index.html for ${req.path}`);
     // Serve React app for all other routes

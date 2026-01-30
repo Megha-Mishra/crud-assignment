@@ -1,13 +1,14 @@
 # Render Blueprint: single service at https://crud-assignment-1-a3d7.onrender.com
 # Builds React frontend and runs Node backend; backend serves the built frontend.
+# IMPORTANT: type must be "web" (Web Service), NOT "static" (Static Site)
 services:
-  - type: web
+  - type: web  # Web Service - runs Node.js server (NOT "static")
     name: crud-assignment-1
     runtime: node
     # Use repo root so we can build frontend and run backend
     rootDir: .
     buildCommand: npm install && npm run build && cd backend && npm install
-    startCommand: node backend/src/server.js
+    startCommand: node backend/src/server.js  # This starts the Express server
     envVars:
       - key: NODE_ENV
         value: production

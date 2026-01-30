@@ -1,5 +1,34 @@
-require("dotenv").config();
-const app = require("./app");
+// Add error handling at the very top
+process.on('uncaughtException', (error) => {
+  console.error('\n❌ UNCAUGHT EXCEPTION:', error);
+  console.error('Stack:', error.stack);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('\n❌ UNHANDLED REJECTION:', reason);
+  console.error('Promise:', promise);
+});
+
+console.log('Step 1: Loading dotenv...');
+try {
+  require("dotenv").config();
+  console.log('✓ dotenv loaded');
+} catch (error) {
+  console.error('✗ Error loading dotenv:', error.message);
+}
+
+console.log('Step 2: Loading app...');
+let app;
+try {
+  app = require("./app");
+  console.log('✓ App loaded successfully');
+} catch (error) {
+  console.error('✗ Error loading app:', error.message);
+  console.error('Stack:', error.stack);
+  process.exit(1);
+}
+
 const path = require("path");
 const fs = require("fs");
 

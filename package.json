@@ -21,7 +21,8 @@
     "start": "node backend/src/server.js",
     "start:react": "react-scripts start",
     "build": "react-scripts build",
-    "postbuild": "cd backend && npm install",
+    "postbuild": "cd backend && npm install --production=false",
+    "install:backend": "cd backend && npm install",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
